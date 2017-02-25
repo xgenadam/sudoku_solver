@@ -213,6 +213,7 @@ def ideal_soln(values):
                 values[dplaces[0]] = digit
     return values
 
+
 if __name__ == '__main__':
     display(test_values)
     print('\n')
