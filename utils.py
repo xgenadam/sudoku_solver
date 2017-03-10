@@ -1,5 +1,5 @@
 from itertools import chain
-from collections import OrderedDict
+from collections import Counter, OrderedDict
 
 rows = 'ABCDEFGHI'
 cols = '123456789'
@@ -29,6 +29,7 @@ square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','45
 
 rows = 'ABCDEFGHI'
 cols = '123456789'
+
 
 def cross(a, b):
     return [s+t for s in a for t in b]
@@ -86,8 +87,16 @@ def print_sudoku(ordered_grid_dict):
     return
 
 
-def serialize_grid(ordered_grid_dict):
-    return ''.join([str(v) for v in ordered_grid_dict.values()])
+def serialize_grid(sudoku_dict):
+    serial = []
+    for r in rows:
+        s = ''.join(sudoku_dict[r + c].center(3) + ('|' if c in '36' else '')
+                    for c in cols if
+                    sudoku_dict.get(r + c, False) and r + c in sudoku_dict.keys())
+        if r in map(lambda x: x[0], sudoku_dict.keys()):
+            serial.append(s)
+
+    return ''.join(serial)
 
 
 def potential_grid_values(grid):
@@ -129,10 +138,28 @@ def eliminate(values):
 
         peers = set(col_peers) | set(row_peers) | set(grid_peers)
 
-        print(peers)
+        # print(peers)
 
         for peer in peers:
             if peer not in solved_values:
                 values[peer] = values[peer].replace(value, '')
 
     return values
+
+
+def contains_clashes(values):
+    for unit in unitlist:
+        try:
+            solved_values = [values[cell] for cell in unit if len(values[cell]) == 1]
+        except Exception as e:
+            import pdb; pdb.set_trace()
+            raise e
+        for num_occurence in Counter(solved_values).values():
+            if num_occurence > 1:
+                return True
+
+    return False
+
+
+def sudoku_solved(values):
+    return all(len(cell_val) == 1 for cell_val in values.values())   # and not contains_clashes(values)

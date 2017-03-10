@@ -86,6 +86,9 @@ test_values = {
     'H8': '123456789'
 }
 
+class BrokenSudokuException(Exception):
+    pass
+
 
 def reduce_puzzle(values):
     stalled = False
@@ -102,7 +105,7 @@ def reduce_puzzle(values):
         # Check how many boxes have a determined value, to compare
         solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
         # If no new values were added, stop the loop.
-        stalled = solved_values_before == solved_values_after
+        stalled = (solved_values_before == solved_values_after)
         # Sanity check, return False if there is a box with zero available values:
         if len([box for box in values.keys() if len(values[box]) == 0]):
             return False
