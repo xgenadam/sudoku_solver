@@ -162,4 +162,4 @@ def contains_clashes(values):
 
 
 def sudoku_solved(values):
-    return all(len(cell_val) == 1 for cell_val in values.values())   # and not contains_clashes(values)
+    return all(len(cell_val) == 1 for cell_val in values.values())
